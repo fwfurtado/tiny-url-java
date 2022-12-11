@@ -1,1 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/tinyurl
+    username: postgres
+    password: postgres
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+  cache:
+    type: redis
 
+tiny-url:
+  generator:
+    key: tinyurl
+    length: 6
+    capacity: 1000000
+    error-rate: 0.0001
+    salt: "this is a salt string for tinyurl generator service and it should be a secret string in production environment. This salt string is used to generate a unique hash for each tinyurl."
+  base-path: "http://localhost:8080/"
