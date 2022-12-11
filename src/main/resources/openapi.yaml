@@ -1,0 +1,112 @@
+openapi: 3.0.3
+info:
+  title: Tiny URL
+  description: An example of Tiny URL API
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  '/{id}':
+    get:
+      summary: Get the original URL
+      operationId: findOriginalUrl
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the tiny URL
+          required: true
+          schema:
+            type: string
+      responses:
+        '301':
+          description: Redirect to the original URL
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The original URL
+
+        '404':
+          description: The tiny URL is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                notFound:
+                  value:
+                    message: The tiny URL is not found
+                    code: 404
+  '/shortener':
+    post:
+      summary: Create a tiny URL
+      operationId: createTinyUrl
+      requestBody:
+        description: The original URL
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UrlRequest'
+      responses:
+        '201':
+          description: The tiny URL is created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UrlResponse'
+        '400':
+          description: The original URL is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidUrl:
+                  value:
+                    message: The original URL is invalid
+                    code: 400
+components:
+  schemas:
+    UrlRequest:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: The original URL
+          example: https://www.google.com
+      required:
+        - url
+    UrlResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: The original URL
+          example: https://www.google.com
+        tinyUrl:
+          type: string
+          format: uri
+          description: The tiny URL
+          example: http://localhost:8080/1a2b3c4
+      required:
+        - id
+        - url
+        - tinyUrl
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The error message
+          example: The original URL is invalid
+        code:
+          type: integer
+          format: int32
+          description: The error code
+          example: 400
+      required:
+        - message
+        - code
