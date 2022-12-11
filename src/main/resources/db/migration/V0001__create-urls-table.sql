@@ -1,0 +1,10 @@
+CREATE TABLE urls (
+  id BIGSERIAL NOT NULL,
+  url VARCHAR(2048) NOT NULL,
+  tiny_url VARCHAR(2048) NOT NULL,
+  hash VARCHAR(7) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP,
+
+  CONSTRAINT pk_urls PRIMARY KEY  (id)
+);
